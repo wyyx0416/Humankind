@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>人类城邦政府 · 内部信息网</title>
+    <style>
+        :root {
+            --deep-blue: #1a3c5e;
+            --intro-bg: #1e2329;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Songti SC", "Noto Serif SC", "STSong", "SimSun", "Georgia", "Times New Roman", serif;
+            background-color: var(--intro-bg);
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        #intro-view {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 24px 20px;
+        }
+
+        .message-box {
+            background-color: #ffffff;
+            max-width: 600px;
+            width: 100%;
+            padding: 36px 38px 32px;
+            border-radius: 2px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.18), 0 1px 4px rgba(0, 0, 0, 0.08);
+            line-height: 2;
+            color: #2b2b2b;
+            letter-spacing: 0.03em;
+        }
+
+        .message-box p {
+            font-size: 15px;
+            text-indent: 2em;
+            margin-bottom: 10px;
+        }
+        .message-box p:last-child {
+            margin-bottom: 0;
+        }
+
+        .btn-view-obituary {
+            display: inline-block;
+            margin-top: 28px;
+            padding: 13px 36px;
+            font-family: inherit;
+            font-size: 15px;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            color: #ffffff;
+            background-color: var(--deep-blue);
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: background-color 0.25s ease, transform 0.2s ease, box-shadow 0.25s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+        .btn-view-obituary:hover {
+            background-color: #1f4d78;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.28);
+            transform: translateY(-1px);
+        }
+        .btn-view-obituary:active {
+            background-color: #15304d;
+            transform: translateY(1px);
+        }
+    </style>
+</head>
+<body>
+    <div id="intro-view">
+        <div class="message-box">
+            <p>你是阿柏纳学院系统的一名学生，按照学院的职业规划，你本应该在一年零六个月后才能正式入职生物研究局，然而今天你的导师枂缇向你发送信息，告知你将在一个月内提前入职，接任你学姐的工作，她对原因讳莫如深，只有一条政府媒体网站的讣告链接发送过来。</p>
+            <p>你与学姐希瑞斯在两年前就已经缺乏联系，没想到再次看到消息，学姐已经出现在了讣告上，然而直觉告诉你这一切并不简单……</p>
+        </div>
+        <button class="btn-view-obituary" id="btn-view-obituary">查看讣告</button>
+    </div>
+
+    <script>
+        document.getElementById('btn-view-obituary').addEventListener('click', function() {
+            window.location.href = 'obituary.html';
+        });
+    </script>
+</body>
+</html>

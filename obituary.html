@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>人类城邦政府 · 内部信息网</title>
+    <style>
+        :root {
+            --deep-blue: #1a3c5e;
+            --mid-blue: #2c5f8a;
+            --light-blue: #e8eff6;
+            --pure-white: #ffffff;
+            --text-dark: #2b2b2b;
+            --text-medium: #3d3d3d;
+            --border-light: #dce3ea;
+            --border-medium: #c4ced9;
+            --shadow-soft: 0 1px 4px rgba(26, 60, 94, 0.06);
+            --shadow-card: 0 2px 12px rgba(26, 60, 94, 0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Songti SC", "Noto Serif SC", "STSong", "SimSun", "Georgia", "Times New Roman", serif;
+            background-color: #f4f7fa;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* 内部视图 */
+        #internal-view {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* 顶部导航 */
+        .internal-header {
+            width: 100%;
+            background-color: #ffffff;
+            border-bottom: 2px solid var(--border-medium);
+            box-shadow: var(--shadow-soft);
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            padding: 0 24px;
+        }
+
+        .header-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 56px;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .header-logo {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+        .header-logo .logo-text {
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            color: var(--deep-blue);
+        }
+        .header-logo .logo-divider {
+            width: 1px;
+            height: 16px;
+            background-color: var(--deep-blue);
+            opacity: 0.5;
+            margin: 0 2px;
+        }
+        .header-logo .logo-sub {
+            font-size: 10px;
+            letter-spacing: 0.08em;
+            color: var(--mid-blue);
+        }
+
+        .header-nav {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+            font-size: 14px;
+            letter-spacing: 0.05em;
+            color: #4a5568;
+            white-space: nowrap;
+        }
+        .header-nav span {
+            cursor: default;
+            padding: 6px 4px;
+            border-bottom: 2px solid transparent;
+            transition: 0.2s;
+        }
+        .header-nav span.active {
+            color: var(--deep-blue);
+            font-weight: 700;
+            border-bottom-color: var(--deep-blue);
+        }
+        #nav-home {
+            cursor: pointer;
+            user-select: none;
+        }
+        #nav-home:hover {
+            color: var(--deep-blue);
+        }
+
+        .header-search {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-shrink: 1;
+        }
+        .header-search input {
+            width: 140px;
+            padding: 7px 10px;
+            font-family: inherit;
+            font-size: 13px;
+            border: 1px solid var(--border-medium);
+            border-radius: 3px;
+            outline: none;
+            transition: border 0.2s;
+        }
+        .header-search input:focus {
+            border-color: var(--deep-blue);
+        }
+        .header-search button {
+            background-color: var(--deep-blue);
+            color: white;
+            border: none;
+            padding: 7px 14px;
+            font-family: inherit;
+            font-size: 13px;
+            letter-spacing: 0.04em;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .header-search button:hover {
+            background-color: #1f4d78;
+        }
+
+        /* 内容区 */
+        .content-wrapper {
+            width: 100%;
+            max-width: 780px;
+            margin: 32px auto 40px;
+            padding: 0 16px;
+        }
+
+        .obituary-card {
+            background-color: var(--pure-white);
+            border-radius: 4px;
+            box-shadow: var(--shadow-card);
+            padding: 48px 52px 40px;
+            border-top: 4px solid var(--deep-blue);
+            position: relative;
+        }
+
+        .profile-card {
+            background-color: var(--pure-white);
+            border-radius: 4px;
+            box-shadow: var(--shadow-card);
+            padding: 40px 48px;
+            border-top: 4px solid var(--deep-blue);
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+        }
+
+        .profile-header {
+            display: flex;
+            gap: 32px;
+            align-items: flex-start;
+            flex-wrap: wrap;
+        }
+
+        .avatar-placeholder {
+            width: 130px;
+            height: 160px;
+            background-color: #f0f4f8;
+            border: 2px dashed var(--border-medium);
+            border-radius: 4px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: #8899aa;
+            font-size: 13px;
+            letter-spacing: 0.06em;
+            flex-shrink: 0;
+        }
+        .avatar-placeholder .icon {
+            font-size: 32px;
+            margin-bottom: 6px;
+            opacity: 0.6;
+        }
+
+        .profile-details {
+            flex: 1;
+            min-width: 240px;
+        }
+        .profile-details h2 {
+            font-size: 22px;
+            color: var(--deep-blue);
+            margin-bottom: 14px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+        }
+        .info-grid {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 8px 16px;
+            font-size: 15px;
+            color: var(--text-medium);
+            line-height: 1.7;
+        }
+        .info-grid .label {
+            font-weight: 600;
+            color: #4a5568;
+            white-space: nowrap;
+        }
+        .info-grid .value strong {
+            font-weight: 700;
+            color: #1a2f42;
+        }
+
+        .teacher-comment {
+            background-color: #f8fafd;
+            border-left: 4px solid var(--deep-blue);
+            padding: 20px 24px;
+            border-radius: 2px;
+            margin-top: 8px;
+            font-style: italic;
+            color: #2d3a4a;
+            line-height: 1.8;
+            letter-spacing: 0.03em;
+            position: relative;
+        }
+        .teacher-comment::before {
+            content: "“";
+            font-size: 40px;
+            color: var(--deep-blue);
+            opacity: 0.3;
+            position: absolute;
+            left: 12px;
+            top: -4px;
+            font-family: Georgia, serif;
+        }
+        .teacher-comment p {
+            position: relative;
+            z-index: 1;
+            text-indent: 0;
+            margin: 0;
+        }
+        .teacher-comment .attribution {
+            display: block;
+            text-align: right;
+            margin-top: 8px;
+            font-style: normal;
+            font-weight: 600;
+            color: var(--deep-blue);
+            letter-spacing: 0.06em;
+        }
+
+        /* 返回按钮 */
+        .btn-back {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 8px 24px;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+            color: var(--deep-blue);
+            background-color: transparent;
+            border: 1px solid var(--deep-blue);
+            border-radius: 3px;
+            cursor: pointer;
+            transition: 0.2s;
+            align-self: flex-start;
+        }
+        .btn-back:hover {
+            background-color: var(--light-blue);
+            border-color: #1a3c5e;
+        }
+
+        .main-title {
+            text-align: center;
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            color: var(--deep-blue);
+            margin-bottom: 10px;
+        }
+        .title-underline {
+            width: 60px;
+            height: 2px;
+            background-color: var(--deep-blue);
+            margin: 0 auto 28px;
+            border-radius: 1px;
+            opacity: 0.7;
+        }
+
+        .content-section p {
+            text-indent: 2em;
+            margin-bottom: 14px;
+            font-size: 15px;
+            color: var(--text-medium);
+            line-height: 1.9;
+        }
+        .content-section strong {
+            font-weight: 700;
+            color: #1a2f42;
+        }
+
+        .divider-section {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin: 32px 0 24px;
+            opacity: 0.6;
+        }
+        .divider-line {
+            flex: 1;
+            height: 1px;
+            background-color: var(--border-medium);
+        }
+        .divider-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: var(--deep-blue);
+            flex-shrink: 0;
+            opacity: 0.5;
+        }
+
+        .list-subtitle {
+            text-align: center;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--deep-blue);
+            margin-bottom: 16px;
+        }
+
+        .name-table-wrapper {
+            overflow-x: auto;
+            margin-bottom: 10px;
+        }
+        .name-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+            table-layout: fixed;
+        }
+        .name-table th,
+        .name-table td {
+            padding: 10px 8px;
+            text-align: center;
+            border-bottom: 1px solid var(--border-light);
+            color: var(--text-medium);
+            font-weight: 400;
+        }
+        .name-table thead th {
+            background-color: var(--light-blue);
+            font-weight: 600;
+            color: var(--deep-blue);
+            font-size: 13px;
+            border-bottom: 2px solid var(--border-medium);
+        }
+        .name-table tbody tr:hover {
+            background-color: #fafcfd;
+        }
+
+        .signature-section {
+            margin-top: 28px;
+            text-align: right;
+            font-size: 14px;
+            color: var(--text-medium);
+            line-height: 2;
+        }
+        .publish-date {
+            color: #4a5568;
+        }
+        .publish-authority {
+            font-weight: 600;
+            color: var(--deep-blue);
+            font-size: 15px;
+        }
+
+        .footer-disclaimer {
+            margin-top: 36px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border-light);
+            text-align: center;
+            font-size: 11px;
+            color: #8a949e;
+            letter-spacing: 0.06em;
+        }
+
+        @media (max-width: 700px) {
+            .header-container {
+                height: auto;
+                padding: 12px 0;
+                gap: 10px;
+            }
+            .header-nav {
+                gap: 16px;
+                font-size: 13px;
+            }
+            .header-search input {
+                width: 100px;
+            }
+            .obituary-card,
+            .profile-card {
+                padding: 32px 24px 28px;
+            }
+            .profile-header {
+                flex-direction: column;
+                align-items: center;
+            }
+            .profile-details h2 {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="internal-view">
+        <header class="internal-header">
+            <div class="header-container">
+                <div class="header-logo">
+                    <span class="logo-text">人类城邦</span>
+                    <span class="logo-divider"></span>
+                    <span class="logo-sub">HUMAN CITY-STATE</span>
+                </div>
+                <nav class="header-nav">
+                    <span id="nav-home">首页</span>
+                    <span id="nav-notice" class="active">政府通告</span>
+                    <span id="nav-affairs">便民事务</span>
+                    <span id="nav-profile">个人中心</span>
+                </nav>
+                <div class="header-search">
+                    <input type="text" id="search-input" placeholder="搜索姓名或工号">
+                    <button id="search-btn">搜索</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- 讣告页 -->
+        <div class="content-wrapper" id="page-obituary">
+            <div class="obituary-card">
+                <h1 class="main-title">讣 告</h1>
+                <div class="title-underline"></div>
+                <div class="content-section">
+                    <p><strong>6月18日下午</strong>，<strong>威斯顿区生物研究局（TBCR）西II实验区</strong>发生一起实验室意外事故，事故共造成二十一名研究人员不幸遇难，其中包括数名骨干研究员。目前现场已完全受控，周边环境未受影响，事故具体原因正在进一步调查中。</p>
+                    <p>据研究院初步通报，事故发生于当日下午实验操作过程中，因设备突发异常引发连锁反应。应急程序随即启动，但未能阻止悲剧发生。遇难人员中，包括长期参与核心科研项目的骨干研究员威利、凯瑟琳、斯罗德，以及其他十八名来自不同研究组的中青年科研人员。院方对此表示极度悲痛和深切哀悼。</p>
+                    <p>"他们每一位都是研究院不可或缺的成员。"生物研究局（TBCR）限外人逻各斯表示，"尤其是三位骨干研究员的离世，对本院相关科研方向造成了不可估量的损失。我们向所有遇难者的家属致以最沉痛的慰问。"</p>
+                    <p>善后工作组已成立，正一对一对接遇难者家属，协助处理抚恤及后事。此次事故为孤立事件，不涉及外部因素，研究院其他区域运行正常，公众无需恐慌。</p>
+                    <p>为缅怀逝者，将于<strong>6月29日上午10时</strong>在<strong>各区白教堂</strong>举行追悼仪式，并设立临时纪念墙，长期供同事及家属悼念，同时将全面排查实验室安全隐患，修订安全操作规范，杜绝类似事故再次发生。</p>
+                </div>
+                <div class="divider-section">
+                    <span class="divider-line"></span>
+                    <span class="divider-dot"></span>
+                    <span class="divider-line"></span>
+                </div>
+                <p class="list-subtitle">【遇难研究员名单】共21人 · 排名不分先后</p>
+                <div class="name-table-wrapper">
+                    <table class="name-table">
+                        <thead><tr><th>序号</th><th>姓名</th><th>序号</th><th>姓名</th><th>序号</th><th>姓名</th></tr></thead>
+                        <tbody>
+                            <tr><td>1</td><td>威利</td><td>8</td><td>戴安娜</td><td>15</td><td>安娜</td></tr>
+                            <tr><td>2</td><td>凯瑟琳</td><td>9</td><td>马库斯</td><td>16</td><td>保罗沃克</td></tr>
+                            <tr><td>3</td><td>斯罗德</td><td>10</td><td>露西亚</td><td>17</td><td>西蒙</td></tr>
+                            <tr><td>4</td><td>艾伦</td><td>11</td><td>托马斯</td><td>18</td><td>瑞秋</td></tr>
+                            <tr><td>5</td><td>若妮</td><td>12</td><td>英丽</td><td>19</td><td>乔纳森</td></tr>
+                            <tr><td>6</td><td>布鲁诺</td><td>13</td><td>商言玖</td><td>20</td><td>静凌</td></tr>
+                            <tr><td>7</td><td>希瑞斯</td><td>14</td><td>克里斯</td><td>21</td><td>悦水</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="signature-section">
+                    <p class="publish-date">60014年6月28日 中午十二时</p>
+                    <p class="publish-authority">人类城邦政府</p>
+                </div>
+                <div class="footer-disclaimer">一切解释权归政府所有</div>
+            </div>
+        </div>
+
+        <!-- 希瑞斯个人简介页 -->
+        <div class="content-wrapper profile-page" id="page-profile-cyries" style="display: none;">
+            <div class="profile-card">
+                <div class="profile-header">
+                    <div class="avatar-placeholder">
+                        <span class="icon">🪪</span>
+                        <span>证件照</span>
+                    </div>
+                    <div class="profile-details">
+                        <h2>希瑞斯 · Cyries</h2>
+                        <div class="info-grid">
+                            <span class="label">年龄：</span><span class="value">25</span>
+                            <span class="label">生日：</span><span class="value">4月15日</span>
+                            <span class="label">性别：</span><span class="value">女</span>
+                            <span class="label">种族：</span><span class="value">人类</span>
+                            <span class="label">身高 / 体重：</span><span class="value">165cm · 51kg</span>
+                            <span class="label">身份：</span><span class="value">生物研究局西Ⅱ区基础研究员</span>
+                            <span class="label">经历：</span>
+                            <span class="value">
+                                60011年毕业，因科研能力突出被选入研究院西Ⅰ区工作。<br>
+                                60012年5月被选入<strong>基础异形培育实验Ⅵ期</strong>，主要职责为实验生物的照顾与观察。<br>
+                                60014年3月19日牺牲。
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="teacher-comment">
+                    <p>"她敏锐且大胆，是科研领域的天才，她的逝去无疑是人类的重大损失。"</p>
+                    <span class="attribution">—— 枂缇</span>
+                </div>
+                <button class="btn-back">返回讣告</button>
+            </div>
+        </div>
+
+        <!-- 斯罗德个人简介页 -->
+        <div class="content-wrapper profile-page" id="page-profile-sloth" style="display: none;">
+            <div class="profile-card">
+                <div class="profile-header">
+                    <div class="avatar-placeholder">
+                        <span class="icon">🪪</span>
+                        <span>证件照</span>
+                    </div>
+                    <div class="profile-details">
+                        <h2>斯罗德 · Sloth</h2>
+                        <div class="info-grid">
+                            <span class="label">年龄：</span><span class="value">32</span>
+                            <span class="label">生日：</span><span class="value">11月7日</span>
+                            <span class="label">性别：</span><span class="value">男</span>
+                            <span class="label">种族：</span><span class="value">人类</span>
+                            <span class="label">外形：</span><span class="value">身高188cm，体重82kg，浅灰色短发，右侧脖颈处有皮肤移植痕迹。</span>
+                            <span class="label">身份：</span><span class="value">生物研究局西Ⅱ区异形行为分析专家</span>
+                            <span class="label">经历：</span>
+                            <span class="value">
+                                59991年毕业，后调入生物研究局西Ⅱ区，负责实验生物的风险评估与应急处理。<br>
+                                60005年成为<strong>基础异形培育实验Ⅵ期</strong>的进度负责人。<br>
+                                60014年3月19日牺牲。
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="teacher-comment">
+                    <p>"他从不犹豫，就像最精密的评估仪器，也从不出错。"</p>
+                    <span class="attribution">—— 康妥乐</span>
+                </div>
+                <button class="btn-back">返回讣告</button>
+            </div>
+        </div>
+
+        <!-- 凯瑟琳个人简介页 -->
+        <div class="content-wrapper profile-page" id="page-profile-catherine" style="display: none;">
+            <div class="profile-card">
+                <div class="profile-header">
+                    <div class="avatar-placeholder">
+                        <span class="icon">🪪</span>
+                        <span>证件照</span>
+                    </div>
+                    <div class="profile-details">
+                        <h2>凯瑟琳 · Catherine</h2>
+                        <div class="info-grid">
+                            <span class="label">年龄：</span><span class="value">29</span>
+                            <span class="label">生日：</span><span class="value">8月23日</span>
+                            <span class="label">性别：</span><span class="value">女</span>
+                            <span class="label">种族：</span><span class="value">人类</span>
+                            <span class="label">外形：</span><span class="value">身高162cm，体重48kg，棕色长发，左颊有一道实验事故留下的淡疤。</span>
+                            <span class="label">身份：</span><span class="value">生物研究局西Ⅱ区基因编辑组组长</span>
+                            <span class="label">经历：</span>
+                            <span class="value">
+                                60004年毕业，进入生物研究局西Ⅱ区核心实验室。<br>
+                                60006年主导的定向诱变项目成功将致死率降低47%。<br>
+                                60007年自愿加入<strong>基础异形培育实验Ⅵ期</strong>。<br>
+                                60014年3月19日牺牲。
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="teacher-comment">
+                    <p>"智慧与旺盛的生命力相结合之时，她成了威斯顿区的明星。"</p>
+                    <span class="attribution">—— 康妥乐</span>
+                </div>
+                <button class="btn-back">返回讣告</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+            const pageObituary = document.getElementById('page-obituary');
+            const searchInput = document.getElementById('search-input');
+            const searchBtn = document.getElementById('search-btn');
+
+            const profilePages = document.querySelectorAll('.profile-page');
+            const allBackButtons = document.querySelectorAll('.btn-back');
+
+            const navHome = document.getElementById('nav-home');
+            const navNotice = document.getElementById('nav-notice');
+            const navAffairs = document.getElementById('nav-affairs');
+            const navPersonal = document.getElementById('nav-profile');
+
+            function showObituary() {
+                pageObituary.style.display = 'block';
+                profilePages.forEach(p => p.style.display = 'none');
+            }
+
+            function showProfile(profileId) {
+                pageObituary.style.display = 'none';
+                profilePages.forEach(p => p.style.display = 'none');
+                document.getElementById(profileId).style.display = 'block';
+            }
+
+            // 搜索功能
+            function performSearch() {
+                const keyword = searchInput.value.trim().toLowerCase();
+                if (keyword === '希瑞斯' || keyword === 'cyries') {
+                    showProfile('page-profile-cyries');
+                    setActiveNav('notice');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                } else if (keyword === '斯罗德' || keyword === 'sloth') {
+                    showProfile('page-profile-sloth');
+                    setActiveNav('notice');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                } else if (keyword === '凯瑟琳' || keyword === 'catherine') {
+                    showProfile('page-profile-catherine');
+                    setActiveNav('notice');
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                } else {
+                    alert('无此内容收录');
+                }
+            }
+
+            searchBtn.addEventListener('click', performSearch);
+            searchInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    performSearch();
+                }
+            });
+
+            // 返回讣告按钮
+            allBackButtons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    showObituary();
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                });
+            });
+
+            // 导航菜单
+            navHome.addEventListener('click', function() {
+                window.location.href = 'shouye.html';
+            });
+            navNotice.addEventListener('click', function() {
+                showObituary();
+                setActiveNav('notice');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+            navAffairs.addEventListener('click', function() {
+                alert('便民事务模块暂未开放。');
+            });
+            navPersonal.addEventListener('click', function() {
+                alert('个人中心暂未开放。');
+            });
+
+            function setActiveNav(type) {
+                navHome.classList.remove('active');
+                navNotice.classList.remove('active');
+                if (type === 'notice') navNotice.classList.add('active');
+            }
+        })();
+    </script>
+</body>
+</html>
